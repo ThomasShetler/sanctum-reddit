@@ -1,0 +1,33 @@
+# Checks the Sanctum Reddit service. Production hosting can be added later
+# as a Linux web app, the same way Sanctum Discord is deployed.
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  nodeVersion: 22.x
+
+stages:
+  - stage: Build
+    displayName: Build
+    jobs:
+      - job: Build
+        displayName: Check and test
+        steps:
+          - task: UseNode@1
+            displayName: Use Node $(nodeVersion)
+            inputs:
+              version: $(nodeVersion)
+
+          - script: npm run check
+            displayName: Type-strip check
+
+          - script: npm test
+            displayName: Test
